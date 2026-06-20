@@ -121,6 +121,28 @@ export default function App() {
   // Home, Products, SmartMatch, Contacts/Reviews, Admin
   const [currentPath, setCurrentPath] = useState<"home" | "products" | "smart-match" | "testimonials" | "contact" | "admin">("home");
 
+  const [logoClicks, setLogoClicks] = useState(0);
+  const [lastClickTime, setLastClickTime] = useState(0);
+
+  const handleLogoClick = () => {
+    const now = Date.now();
+    if (now - lastClickTime > 1500) {
+      setLogoClicks(1);
+      setLastClickTime(now);
+      setCurrentPath("home");
+    } else {
+      const nextClicks = logoClicks + 1;
+      if (nextClicks >= 3) {
+        setCurrentPath("admin");
+        setLogoClicks(0);
+      } else {
+        setLogoClicks(nextClicks);
+        setLastClickTime(now);
+        setCurrentPath("home");
+      }
+    }
+  };
+
   // Admin secret protection screen
   const [adminCodeInput, setAdminCodeInput] = useState("");
   const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
@@ -177,19 +199,6 @@ export default function App() {
   const [newTestModel, setNewTestModel] = useState("");
   const [newTestRating, setNewTestRating] = useState(5);
   const [newTestText, setNewTestText] = useState("");
-
-  // Watch URL Hash parameter if user is exploring via '/admin' or '#admin'
-  useEffect(() => {
-    const handleHash = () => {
-      const hash = window.location.hash;
-      if (hash === "#admin" || window.location.pathname.endsWith("/admin")) {
-        setCurrentPath("admin");
-      }
-    };
-    window.addEventListener("hashchange", handleHash);
-    handleHash();
-    return () => window.removeEventListener("hashchange", handleHash);
-  }, []);
 
   // Update dynamic CSS custom variables on mount or settings change
   useEffect(() => {
@@ -403,7 +412,7 @@ export default function App() {
       <header className="sticky top-0 z-30 bg-stone-950/90 backdrop-blur-md border-b border-stone-900 shadow-xl">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           {/* Logo brand styling */}
-          <div className="flex items-center gap-3 cursor-pointer" onClick={() => setCurrentPath("home")}>
+          <div className="flex items-center gap-3 cursor-pointer" onClick={handleLogoClick}>
             <div
               className="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-600 to-amber-300 flex items-center justify-center shadow-lg transform hover:rotate-6 transition-all duration-300"
               style={{
@@ -2157,7 +2166,7 @@ export default function App() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Col 1 */}
           <div className="space-y-4">
-            <h4 className="text-white font-extrabold text-sm flex items-center gap-2">
+            <h4 className="text-white font-extrabold text-sm flex items-center gap-2 cursor-pointer" onClick={handleLogoClick}>
               <Award className="w-5 h-5 text-amber-500 font-bold" />
               <span>{settings.logoText}</span>
             </h4>
