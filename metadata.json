@@ -1,0 +1,8 @@
+{
+  "name": "هواتف المغرب الفاخرة",
+  "description": "منصة فاخرة لبيع الهواتف الجديدة والمستعملة في المغرب مع ميزة الاختيار الذكي ولوحة تحكم متكاملة",
+  "requestFramePermissions": [
+    "geolocation"
+  ],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
